@@ -1,6 +1,8 @@
 import { Client, Collection, Interaction } from 'eris';
 import MessageEmbed from 'discord-eris-embeds';
 import fetch from 'node-fetch-commonjs';
+import textToImage from 'text-to-image';
+import * as fs from 'fs';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -48,7 +50,6 @@ client.on('interactionCreate', async interaction => {
         await fetch(`https://airportdb.io/api/v1/airport/${icaoCode}?apiToken=${airportDbToken}`)
             .then(res => res.json())
             .then(airportData => {
-                console.log(getActiveRunways(weatherData, airportData));
                 sendAirportInformation(interaction, weatherData, airportData);
             });
     }
@@ -72,51 +73,129 @@ function sendAirportInformation(interaction, weatherData, airportData) {
 
     let currentDate = `${hour}:${minute} ${day}/${month}/${year}`;
 
-    /* const data = {
+    const informationEmbedTemplate = {
         "embed": {
-            "title": "Aktualne informacje pogodowe",
-            "description": airportData.name,
+            "title": airportData.name,
+            "description": "***Informacje o lotnisku***",
             "color": 16777215,
 
-            "footer": {
-                "text": `Wygenerowano ${currentDate}`
-            },
+            /*"thumbnail": {
+                "url": 'http://localhost//icao_code.png',
+            }, */
 
-            "image": {
-            "url": "https://cdn.discordapp.com/embed/avatars/0.png"
-            },
-            "author": {
-            "name": "author name",
-            "url": "https://discordapp.com",
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
-            },
             "fields": [
-            {
-                "name": "🤔",
-                "value": "some of these properties have certain limits..."
-            },
-            {
-                "name": "😱",
-                "value": "try exceeding some of them!"
-            },
-            {
-                "name": "🙄",
-                "value": "an informative error should show up, and this view will remain as-is until all issues are fixed"
-            },
-            {
-                "name": "<:thonkang:219069250692841473>",
-                "value": "these last two",
-                "inline": true
-            },
-            {
-                "name": "<:thonkang:219069250692841473>",
-                "value": "are inline fields",
-                "inline": true
-            }]
-        }
-    };*/
+                {
+                    "name": "Kod IATA",
+                    "value": airportData.iata_code
+                },
+                {
+                    
+                    "name": "Wysokość elewacji",
+                    "value": `${airportData.elevation_ft}ft / ${Math.round(airportData.elevation_ft * 0.304)}m`
+                },
 
-    return interaction.createMessage(data);
+
+                {
+                    "name": "Ilość pasów",
+                    "value": (airportData.runways).length * 2
+                },
+
+                {
+                    "name": "Wikipedia",
+                    "value": airportData.wikipedia_link
+                },
+            ]
+        }
+    };
+
+    const weatherEmbedTemplate = {
+        "embed": {
+            "description": "***Informacje o pogodzie***",
+            "color": 16777215,
+
+            /*"thumbnail": {
+                "url": 'http://localhost//icao_code.png',
+            }, */
+
+            "fields": [
+                {
+                    "name": "RAW",
+                    "value": weatherData.raw_text,
+                },
+                {
+                    "name": "Ciśnienie",
+                    "value": `${weatherData.barometer.hpa}hPa`,
+                    "inline": true,
+                },
+                {
+                    "name": "Wilgotność powietrza",
+                    "value": `${weatherData.humidity.percent}%`,
+                    "inline": true,
+                },
+                {
+                    "name": "Temperatura powietrza",
+                    "value": `${weatherData.temperature.celsius}°C`,
+                    "inline": true
+                },
+                {
+                    
+                    "name": "Punkt rosy",
+                    "value": `${weatherData.dewpoint.celsius}°C`,
+                    "inline": true,
+                },
+                {
+                    "name": "Widoczność",
+                    "value": `${weatherData.visibility.meters} m`,
+                    "inline": true
+                },
+                {
+                    "name": "Wiatr",
+                    "value": `${weatherData.wind.degrees}° / ${weatherData.wind.speed_kts}kts`,
+                    "inline": true
+
+                }
+            ]
+        }
+    };
+
+    const runwaysEmbedTemplate = {
+        "embed": {
+            "description": "***Informacje o pasach***",
+            "color": 16777215,
+
+            "fields": []
+
+            /*"thumbnail": {
+                "url": 'http://localhost//icao_code.png',
+            }, */
+        }
+    };
+
+    for (const runway of airportData.runways) {
+        runwaysEmbedTemplate.embed.fields.push(
+        {
+            "name": `Pas ${runway.le_ident}`,
+            "value": `
+                Elewacja: ${runway.le_elevation_ft} 
+                Heading: ${runway.le_heading_degT} 
+                Przesunięcie progu: ${runway.le_displaced_threshold_ft !== '' ? `${runway.le_displaced_threshold_ft}ft / ${Math.round(runway.le_displaced_threshold_ft * 0.304)}m` : 'nd'}
+            `
+        },
+        {
+            "name": `Pas ${runway.he_ident}`,
+            "value": `
+                Elewacja: ${runway.he_elevation_ft} 
+                Heading: ${runway.he_heading_degT} 
+                Przesunięcie progu: ${runway.he_displaced_threshold_ft !== '' ? `${runway.he_displaced_threshold_ft}ft / ${Math.round(runway.he_displaced_threshold_ft * 0.304)}m` : 'nd'}
+            `
+        })
+    }
+
+    interaction.createMessage(informationEmbedTemplate);
+    client.createMessage(interaction.channel.id, weatherEmbedTemplate);
+    client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
+
+    return;
 }
 
 client.connect();
