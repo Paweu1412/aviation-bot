@@ -1,8 +1,5 @@
 import { Client, Collection, Interaction } from 'eris';
-import MessageEmbed from 'discord-eris-embeds';
 import fetch from 'node-fetch-commonjs';
-import textToImage from 'text-to-image';
-import * as fs from 'fs';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -55,18 +52,23 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-}
-
 function sendAirportInformation(interaction, weatherData, airportData) {
-    if (isEmpty(airportData) === true) { return; }
-    if (isEmpty(weatherData) === true) { return; }
+    if (!airportData.name || !weatherData) {
+        return interaction.createMessage({
+            "embed": {
+                "color": 16777215,
+                "description": "Podanego lotniska nie ma w bazie danych!"
+            }
+        });
+    }
 
+    const runwaysInfo = getActiveRunways(weatherData, airportData);
+    if (!runwaysInfo) { return; }
+    
     const date = new Date();
 
-    let day = date.getDay();
-    let month = date.getMonth();
+    let day = date.getDate();
+    let month = date.getMonth()+1;
     let year = date.getFullYear();
     let hour = date.getHours();
     let minute = date.getMinutes();
@@ -76,6 +78,10 @@ function sendAirportInformation(interaction, weatherData, airportData) {
     const informationEmbedTemplate = {
         "embed": {
             "title": airportData.name,
+            "thumbnail": {
+                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609766840287252/airport.png"
+            },
+
             "description": "***Informacje o lotnisku***",
             "color": 16777215,
 
@@ -90,7 +96,7 @@ function sendAirportInformation(interaction, weatherData, airportData) {
                 },
                 {
                     
-                    "name": "Wysokość elewacji",
+                    "name": "Elewacja",
                     "value": `${airportData.elevation_ft}ft / ${Math.round(airportData.elevation_ft * 0.304)}m`
                 },
 
@@ -111,6 +117,10 @@ function sendAirportInformation(interaction, weatherData, airportData) {
     const weatherEmbedTemplate = {
         "embed": {
             "description": "***Informacje o pogodzie***",
+            "thumbnail": {
+                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609859450503198/cloudy-day.png"
+            },
+
             "color": 16777215,
 
             /*"thumbnail": {
@@ -161,32 +171,44 @@ function sendAirportInformation(interaction, weatherData, airportData) {
     const runwaysEmbedTemplate = {
         "embed": {
             "description": "***Informacje o pasach***",
+            "thumbnail": {
+                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609953612644402/runway.png"
+            },
+
             "color": 16777215,
 
-            "fields": []
+            "fields": [],
 
             /*"thumbnail": {
                 "url": 'http://localhost//icao_code.png',
             }, */
+
+            "footer": {
+                "text": `Wygenerowano ${currentDate}`
+            }
         }
     };
 
     for (const runway of airportData.runways) {
         runwaysEmbedTemplate.embed.fields.push(
         {
-            "name": `Pas ${runway.le_ident}`,
+            "name": `Pas ${runway.le_ident} ${runwaysInfo[runway.le_ident].status === 'headwind' ? '🟩' : (runwaysInfo[runway.le_ident].status === 'crosswind' ? '🟩 ⚠️' : '🟥')}`,
             "value": `
-                Elewacja: ${runway.le_elevation_ft} 
-                Heading: ${runway.le_heading_degT} 
-                Przesunięcie progu: ${runway.le_displaced_threshold_ft !== '' ? `${runway.le_displaced_threshold_ft}ft / ${Math.round(runway.le_displaced_threshold_ft * 0.304)}m` : 'nd'}
+                *Wiatr: ${runwaysInfo[runway.le_ident].status}, ${runwaysInfo[runway.le_ident].status === ('headwind' || 'tailwind') ? runwaysInfo[runway.le_ident].headtailwind : runwaysInfo[runway.le_ident].crosswind}kts ${runwaysInfo[runway.le_ident].status === 'crosswind' ? `ze strony ${runwaysInfo[runway.le_ident].crosswindSide === 'right' ? 'prawej' : 'lewej'}` : ''}*\n
+                Elewacja: ${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m
+                Heading: ${runway.le_heading_degT}°
+                Przesunięcie progu: ${runway.le_displaced_threshold_ft !== '' ? `${runway.le_displaced_threshold_ft}ft / ${Math.round(runway.le_displaced_threshold_ft * 0.304)}m` : 'brak'}
+                ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : `brak`}
             `
         },
         {
-            "name": `Pas ${runway.he_ident}`,
+            "name": `Pas ${runway.he_ident} ${runwaysInfo[runway.he_ident].status === 'headwind' ? '🟩' : (runwaysInfo[runway.he_ident].status === 'crosswind' ? '🟩 ⚠️' : '🟥')}`,
             "value": `
-                Elewacja: ${runway.he_elevation_ft} 
-                Heading: ${runway.he_heading_degT} 
-                Przesunięcie progu: ${runway.he_displaced_threshold_ft !== '' ? `${runway.he_displaced_threshold_ft}ft / ${Math.round(runway.he_displaced_threshold_ft * 0.304)}m` : 'nd'}
+                *Wiatr: ${runwaysInfo[runway.he_ident].status}, ${runwaysInfo[runway.he_ident].status === ('headwind' || 'tailwind') ? runwaysInfo[runway.he_ident].headtailwind : runwaysInfo[runway.he_ident].crosswind}kts ${runwaysInfo[runway.he_ident].status === 'crosswind' ? `ze strony ${runwaysInfo[runway.he_ident].crosswindSide === 'right' ? 'prawej' : 'lewej'}` : ''}*\n
+                Elewacja: ${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m
+                Heading: ${runway.he_heading_degT}°
+                Przesunięcie progu: ${runway.he_displaced_threshold_ft !== '' ? `${runway.he_displaced_threshold_ft}ft / ${Math.round(runway.he_displaced_threshold_ft * 0.304)}m` : 'brak'}
+                ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : `brak`}
             `
         })
     }
