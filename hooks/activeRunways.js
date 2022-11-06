@@ -4,7 +4,7 @@ function toRad(degrees) {
     return degrees * (pi / 180);
 }
 
-export function getActiveRunways(weatherData, airportData) {
+export function getRunwaysWeather(weatherData, airportData) {
     if (!airportData) { return null; }
     if (!weatherData) { return null; }
 
@@ -54,4 +54,4 @@ export function getActiveRunways(weatherData, airportData) {
     return result;
 }
 
-export default getActiveRunways;
+export default getRunwaysWeather;
