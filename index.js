@@ -1,4 +1,4 @@
-import { Client, Collection, Interaction } from 'eris';
+import { Client } from 'eris';
 import fetch from 'node-fetch-commonjs';
 
 import * as dotenv from 'dotenv';
@@ -85,10 +85,6 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "description": "***Informacje o lotnisku***",
             "color": 16777215,
 
-            /*"thumbnail": {
-                "url": 'http://localhost//icao_code.png',
-            }, */
-
             "fields": [
                 {
                     "name": "Kod IATA",
@@ -122,10 +118,6 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             },
 
             "color": 16777215,
-
-            /*"thumbnail": {
-                "url": 'http://localhost//icao_code.png',
-            }, */
 
             "fields": [
                 {
@@ -178,10 +170,6 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "color": 16777215,
 
             "fields": [],
-
-            /*"thumbnail": {
-                "url": 'http://localhost//icao_code.png',
-            }, */
 
             "footer": {
                 "text": `Wygenerowano ${currentDate}`
