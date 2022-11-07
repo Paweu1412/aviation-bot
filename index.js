@@ -75,8 +75,6 @@ function sendAirportInformation(interaction, weatherData, airportData) {
 
     let currentDate = `${hour}:${minute} ${day}/${month}/${year}`;
 
-    console.log(weatherData.clouds);
-
     const informationEmbedTemplate = {
         "embed": {
             "title": airportData.name,
@@ -84,41 +82,64 @@ function sendAirportInformation(interaction, weatherData, airportData) {
                 "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609766840287252/airport.png"
             },
 
-            "description": "***Information about airport***",
+            "description": "***Airport information***",
             "color": 16777215,
 
             "fields": [
                 {
                     "name": "IATA code",
-                    "value": airportData.iata_code
+                    "value": airportData.iata_code ? airportData.iata_code : 'n/a',
                 },
                 {
                     
                     "name": "Elevation",
-                    "value": `${airportData.elevation_ft}ft / ${Math.round(airportData.elevation_ft * 0.304)}m`
+                    "value": airportData.elevation_ft ? `${airportData.elevation_ft}ft / ${Math.round(airportData.elevation_ft * 0.304)}m` : 'n/a',
                 },
-
-
                 {
                     "name": "Runways",
-                    "value": (airportData.runways).length * 2
+                    "value": airportData.runways ? ((airportData.runways).length * 2) : 'n/a',
                 },
-
                 {
                     "name": "Wikipedia",
-                    "value": airportData.wikipedia_link
+                    "value": airportData.wikipedia_link ? airportData.wikipedia_link : 'n/a',
                 },
             ]
         }
     };
 
-    function pushAirportCloudsInformation(weather) {
-        
+    function getCloudsInformation() {
+        if (!weatherData) { return null; }
+
+        if (!weatherData.clouds) { return '' }
+
+        let callbackInformation = '';
+
+        for (let i = 0; i < weatherData.clouds.length; i++) {
+            let returnString = '';
+
+            if (weatherData.clouds[i]) {
+                if (weatherData.clouds[i].code && weatherData.clouds[i].feet) {
+                    returnString = `${weatherData.clouds[i].code} / ${weatherData.clouds[i].feet}`;
+                }
+    
+                if (weatherData.clouds[i].code && (!weatherData.clouds[i].feet)) {
+                    returnString = `${weatherData.clouds[i].code} / -`;
+                }
+    
+                if ((!weatherData.clouds[i].code) && weatherData.clouds[i].feet) {
+                    returnString = `- / ${weatherData.clouds[i].feet}`;
+                }
+            }
+
+            callbackInformation += `${returnString}\n`
+        }
+
+        return callbackInformation !== '' ? callbackInformation : 'n/a';
     }
 
     const weatherEmbedTemplate = {
         "embed": {
-            "description": "***Information about weather***",
+            "description": "***Weather information***",
             "thumbnail": {
                 "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609859450503198/cloudy-day.png"
             },
@@ -128,52 +149,53 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "fields": [
                 {
                     "name": "RAW",
-                    "value": weatherData.raw_text,
+                    "value": weatherData.raw_text ? weatherData.raw_text : 'n/a',
                 },
                 {
                     "name": "Pressure",
-                    "value": `${weatherData.barometer.hpa}hPa / ${weatherData.barometer.hg}hgIn`,
+                    "value": weatherData.barometer ? `${weatherData.barometer.hpa}hPa / ${weatherData.barometer.hg}hgIn` : 'n/a',
                     "inline": true,
                 },
                 {
                     "name": "Humidity",
-                    "value": `${weatherData.humidity.percent}%`,
+                    "value": weatherData.humidity ? `${weatherData.humidity.percent}%` : 'n/a',
                     "inline": true,
                 },
                 {
                     "name": "Temperature",
-                    "value": `${weatherData.temperature.celsius}°C`,
+                    "value": weatherData.temperature ? `${weatherData.temperature.celsius}°C` : 'n/a',
                     "inline": true
                 },
                 {
                     
                     "name": "Dew point",
-                    "value": `${weatherData.dewpoint.celsius}°C`,
+                    "value": weatherData.dewpoint ? `${weatherData.dewpoint.celsius}°C` : 'n/a',
                     "inline": true,
                 },
                 {
                     "name": "Visibility",
-                    "value": `${weatherData.visibility.meters} m`,
+                    "value": weatherData.visibility ? `${weatherData.visibility.meters} m` : 'n/a',
                     "inline": true
                 },
                 {
                     "name": "Wind",
-                    "value": `${weatherData.wind.degrees}° / ${weatherData.wind.speed_kts}kts`,
+                    "value": weatherData.wind ? `${weatherData.wind.degrees}° / ${weatherData.wind.speed_kts}kts` : 'n/a',
                     "inline": true
                 },
                 {
                     "name": "Wind chill",
-                    "value": `${weatherData.windchill.celsius}°C`,
+                    "value": weatherData.windchill ? `${weatherData.windchill.celsius}°C` : 'n/a',
                     "inline": true
 
                 },
                 {
-                    "name": "Clouds",
-                    "value": `${getAirportClouds(weatherData.clouds)}`
+                    "name": "Flight category",
+                    "value": weatherData.flight_category ? weatherData.flight_category : 'n/a',
+                    "inline": true
                 },
                 {
-                    "name": "Flight category",
-                    "value": weatherData.flight_category,
+                    "name": "Clouds",
+                    "value": getCloudsInformation(),
                     "inline": true
                 },
             ]
@@ -182,7 +204,7 @@ function sendAirportInformation(interaction, weatherData, airportData) {
 
     const runwaysEmbedTemplate = {
         "embed": {
-            "description": "***Information about runways***",
+            "description": "***Runways information***",
             "thumbnail": {
                 "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609953612644402/runway.png"
             },
@@ -236,8 +258,8 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "value": `
                 *Wind: ${runwaysInfo[runway.le_ident].status}, ${getRunwayWindInformation(runway.le_ident)}*
 
-                Elevation: ${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m
-                ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : `n/a`}
+                Elevation: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}
+                ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}
             `
         },
         {
@@ -245,8 +267,8 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "value": `
                 *Wind: ${runwaysInfo[runway.he_ident].status}, ${getRunwayWindInformation(runway.he_ident)}*
 
-                Elevation: ${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m
-                ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : `n/a`}
+                Elevation: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}
+                ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}
             `
         })
     }
