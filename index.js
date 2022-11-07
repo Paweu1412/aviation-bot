@@ -198,6 +198,11 @@ function sendAirportInformation(interaction, weatherData, airportData) {
                     "value": getCloudsInformation(),
                     "inline": true
                 },
+                {
+                    "name": "Observed",
+                    "value": weatherData.observed,
+                    "inline": true
+                },
             ]
         }
     };
