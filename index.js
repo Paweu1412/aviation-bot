@@ -13,6 +13,8 @@ const checkWxApiToken = process.env.CHECK_WX_API_TOKEN;
 
 client.on('ready', async () => {
     try {
+        await client.editStatus('online', {name: 'discord.gg/JB2ubrPDzA'});
+
         await client.createCommand({
             name: 'info',
             type: 1,
@@ -31,28 +33,32 @@ client.on('ready', async () => {
     }
 });
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction) { return; }
+client.on('interactionCreate', async (interaction) => {
+    try {
+        if (!interaction) { return null; }
     
-    if (interaction.data.name === 'info') {
-        const icaoCode = interaction.data.options[0].value.toUpperCase();
-        let weatherData;
-        
-        await fetch(`https://api.checkwx.com/metar/${icaoCode}/decoded?x-api-key=${checkWxApiToken}`)
-            .then(res => res.json())
-            .then(res => {
-                weatherData = res.data[0];
-            });
-
-        await fetch(`https://airportdb.io/api/v1/airport/${icaoCode}?apiToken=${airportDbToken}`)
-            .then(res => res.json())
-            .then(airportData => {
-                sendAirportInformation(interaction, weatherData, airportData);
-            });
+        if (interaction.data.name === 'info') {
+            const icaoCode = interaction.data.options[0].value.toUpperCase();
+            let weatherData;
+            
+            await fetch(`https://api.checkwx.com/metar/${icaoCode}/decoded?x-api-key=${checkWxApiToken}`)
+                .then(res => res.json())
+                .then(res => {
+                    weatherData = res.data[0];
+                });
+    
+            await fetch(`https://airportdb.io/api/v1/airport/${icaoCode}?apiToken=${airportDbToken}`)
+                .then(res => res.json())
+                .then(airportData => {
+                    sendAirportInformation(interaction, weatherData, airportData);
+                });
+        }
+    } catch (err) {
+        console.error(err);
     }
 });
 
-function sendAirportInformation(interaction, weatherData, airportData) {
+async function sendAirportInformation(interaction, weatherData, airportData) {
     if (!airportData.name || !weatherData) {
         return interaction.createMessage({
             "embed": {
@@ -63,7 +69,7 @@ function sendAirportInformation(interaction, weatherData, airportData) {
     }
 
     const runwaysInfo = getRunwaysWeather(weatherData, airportData);
-    if (!runwaysInfo) { return; }
+    if (!runwaysInfo) { return null; }
 
     const date = new Date();
 
@@ -119,7 +125,7 @@ function sendAirportInformation(interaction, weatherData, airportData) {
 
             if (weatherData.clouds[i]) {
                 if (weatherData.clouds[i].code && weatherData.clouds[i].feet) {
-                    returnString = `${weatherData.clouds[i].code} / ${weatherData.clouds[i].feet}`;
+                    returnString = `${weatherData.clouds[i].code} / ${weatherData.clouds[i].feet}ft`;
                 }
     
                 if (weatherData.clouds[i].code && (!weatherData.clouds[i].feet)) {
@@ -219,7 +225,7 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             "fields": [],
 
             "footer": {
-                "text": `Generated at ${currentDate}`
+                "text": `🟩 means the runway is safe\n🟩 ⚠️ means the runway is relatively safe, to be assessed by yourself\n🟥 means the runway is unsafe\n\nGenerated at ${currentDate}`
             }
         }
     };
@@ -231,6 +237,10 @@ function sendAirportInformation(interaction, weatherData, airportData) {
             }
 
             if (runwaysInfo[runway].status === 'crosswind') {
+                if (runwaysInfo[runway].crosswind <= 10) {
+                    return '🟩';
+                }
+                
                 return '🟩 ⚠️';
             }
 
@@ -246,15 +256,19 @@ function sendAirportInformation(interaction, weatherData, airportData) {
         }
 
         function getRunwayWindInformation(runway) {
-            if (runwaysInfo[runway].status === 'headwind' || 'tailwind') {
-                return `${Math.round(runwaysInfo[runway].headtailwind)}kts`;
-            }
+            switch (runwaysInfo[runway].status) {
+                case 'headwind':
+                    return `${Math.round(runwaysInfo[runway].headtailwind)}kts`;
 
-            if (runwaysInfo[runway].status === 'crosswind') {
-                return `${Math.round(runwaysInfo[runway].crosswind)}kts from the ${runwaysInfo[runway].crosswindSide}`
-            }
+                case 'tailwind':
+                    return `${Math.round(runwaysInfo[runway].headtailwind)}kts`;
 
-            return null;
+                case 'crosswind':
+                    return `${Math.round(runwaysInfo[runway].crosswind)}kts from the ${runwaysInfo[runway].crosswindSide}`
+                
+                default:
+                    return null;
+            }
         }
 
         runwaysEmbedTemplate.embed.fields.push(
@@ -278,9 +292,9 @@ function sendAirportInformation(interaction, weatherData, airportData) {
         })
     }
 
-    interaction.createMessage(informationEmbedTemplate);
-    client.createMessage(interaction.channel.id, weatherEmbedTemplate);
-    client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
+    await interaction.createMessage(informationEmbedTemplate);
+    await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
+    await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
 
     return;
 }
