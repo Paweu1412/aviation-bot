@@ -59,6 +59,9 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 async function sendAirportInformation(interaction, weatherData, airportData) {
+    let interactionMemberUsername = interaction.member.user.username;
+    let interactionMemberGuildName = interaction.member.guild.name;
+
     if (!airportData.name || !weatherData) {
         return interaction.createMessage({
             "embed": {
@@ -296,7 +299,22 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
     await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
     await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
 
+    client.createMessage('1044041529557274744', `@everyone *${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
+    
     return;
 }
+
+client.on('messageCreate', (message) => {
+    if (!message.content.includes('hey bot, give me some info!')) { return; }
+    if (message.channel.id != 1044041529557274744) { return; }
+
+    client.guilds.forEach(guild => {
+        client.createMessage('1044041529557274744', `${guild.name} / ${guild.id} / ${guild.memberCount}`);
+    });
+});
+
+client.on('guildCreate', (guild) => {
+    client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
+})
 
 client.connect();
