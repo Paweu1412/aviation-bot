@@ -49,8 +49,8 @@ client.on('interactionCreate', async (interaction) => {
     
             await fetch(`https://airportdb.io/api/v1/airport/${icaoCode}?apiToken=${airportDbToken}`)
                 .then(res => res.json())
-                .then(airportData => {
-                    sendAirportInformation(interaction, weatherData, airportData);
+                .then(async airportData => {
+                    await sendAirportInformation(interaction, weatherData, airportData);
                 });
         }
     } catch (err) {
@@ -88,7 +88,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
         "embed": {
             "title": airportData.name,
             "thumbnail": {
-                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609766840287252/airport.png"
+                "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001174383857676/airport.png"
             },
 
             "description": "***Airport information***",
@@ -150,7 +150,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
         "embed": {
             "description": "***Weather information***",
             "thumbnail": {
-                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609859450503198/cloudy-day.png"
+                "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001175008821319/cloudy-day.png"
             },
 
             "color": 16777215,
@@ -220,7 +220,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
         "embed": {
             "description": "***Runways information***",
             "thumbnail": {
-                "url": "https://media.discordapp.net/attachments/1038217845085061153/1038609953612644402/runway.png"
+                "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001174685843526/runway.png"
             },
 
             "color": 16777215,
@@ -299,22 +299,26 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
     await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
     await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
 
-    client.createMessage('1044041529557274744', `@everyone *${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
+    await client.createMessage('1044041529557274744', `@everyone *${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
     
     return;
 }
 
-client.on('messageCreate', (message) => {
-    if (!message.content.includes('hey bot, give me some info!')) { return; }
+client.on('messageCreate', async (message) => {
+    if (!message.content.includes('number of servers bot')) { return; }
     if (message.channel.id != 1044041529557274744) { return; }
 
-    client.guilds.forEach(guild => {
-        client.createMessage('1044041529557274744', `${guild.name} / ${guild.id} / ${guild.memberCount}`);
-    });
+    let numberOfServers = await client.guilds.size;
+
+    await client.createMessage('1044041529557274744', `Liczba serwerów: ${numberOfServers} [${100 - numberOfServers}]`);
 });
 
-client.on('guildCreate', (guild) => {
-    client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
-})
+client.on('guildCreate', async (guild) => {
+    await client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
+});
+
+client.on('guildDelete', async (guild) => {
+    await client.createMessage('1044041529557274744', `Paffsowy bot właśnie został usunięty z serwera ${guild.name} / ${guild.memberCount}`);
+});
 
 client.connect();
