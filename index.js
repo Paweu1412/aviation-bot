@@ -59,7 +59,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 async function sendAirportInformation(interaction, weatherData, airportData) {
-    let interactionMemberUsername = interaction.member.user.username;
+    let interactionMemberUsername = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
     let interactionMemberGuildName = interaction.member.guild.name;
 
     if (!airportData.name || !weatherData) {
