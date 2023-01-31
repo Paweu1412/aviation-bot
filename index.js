@@ -11,6 +11,13 @@ import { getRunwaysWeather } from './hooks/activeRunways.js';
 const airportDbToken = process.env.AIRPORT_DB_TOKEN;
 const checkWxApiToken = process.env.CHECK_WX_API_TOKEN;
 
+// setTimeout(async () => {
+//     await client.getCommands()
+//         .then((commands) => {
+//             console.log(commands);
+//         })
+// }, 5000)
+
 client.on('ready', async () => {
     try {
         await client.editStatus('online', {name: 'discord.gg/JB2ubrPDzA'});
@@ -299,9 +306,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
     await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
     await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
 
-    if (interactionMemberGuildName === undefined) { return; }
-
-    await client.createMessage('1044041529557274744', `@everyone *${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
+    await client.createMessage('1044041529557274744', `*${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
     
     return;
 }
@@ -320,7 +325,10 @@ client.on('guildCreate', async (guild) => {
 });
 
 client.on('guildDelete', async (guild) => {
+    if (guild.name === undefined) { return; }
+
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie został usunięty z serwera ${guild.name} / ${guild.memberCount}`);
 });
 
 client.connect();
+
