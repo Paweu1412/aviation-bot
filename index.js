@@ -299,6 +299,8 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
     await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
     await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
 
+    if (interactionMemberGuildName === undefined) { return; }
+
     await client.createMessage('1044041529557274744', `@everyone *${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
     
     return;
