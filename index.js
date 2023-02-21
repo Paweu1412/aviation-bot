@@ -358,12 +358,18 @@ client.on('messageCreate', async (message) => {
 
 client.on('guildCreate', async (guild) => {
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
+
+    console.log(guild.id)
+
+    databasePool.query('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => {});
 });
 
 client.on('guildDelete', async (guild) => {
     if (guild.name === undefined) { return; }
 
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie został usunięty z serwera ${guild.name} / ${guild.memberCount}`);
+
+    databasePool.query('DELETE FROM `languages` WHERE id=?', [guild.id], () => {});
 });
 
 client.connect();
