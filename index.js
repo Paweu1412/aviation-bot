@@ -269,7 +269,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     "fields": [],
         
                     "footer": {
-                        "text": `🟩 ${translates[chosenLanguage].safe}\n🟩 ⚠️ ${translates[chosenLanguage].relatively_safe}\n🟥 ${translates[chosenLanguage].unsafe}\n\n${translates[chosenLanguage].generated_at} ${currentDate}`
+                        "text": `🟩 ${translates[chosenLanguage].safe}\n🟩 ⚠️ ${translates[chosenLanguage].relatively_safe}\n🟥 ${translates[chosenLanguage].unsafe}\n\n${translates[chosenLanguage].generated_at} ${currentDate}\n\n${translates[chosenLanguage].footer_information}`
                     }
                 }
             };
@@ -298,8 +298,12 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
         
                     return null;
                 }
+
+                
         
                 function getRunwayWindInformation(runway) {
+                    let crosswindSide = runwaysInfo[runway].crosswindSide;
+
                     switch (runwaysInfo[runway].status) {
                         case 'headwind':
                             return `${Math.round(runwaysInfo[runway].headtailwind)}kts`;
@@ -308,27 +312,30 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                             return `${Math.round(runwaysInfo[runway].headtailwind)}kts`;
         
                         case 'crosswind':
-                            return `${Math.round(runwaysInfo[runway].crosswind)}kts from the ${runwaysInfo[runway].crosswindSide}`
+                            return `${Math.round(runwaysInfo[runway].crosswind)}kts ${translates[chosenLanguage][crosswindSide]}`;
                         
                         default:
                             return null;
                     }
                 }
+
+                let leWind = runwaysInfo[runway.le_ident].status;
+                let heWind = runwaysInfo[runway.he_ident].status;
         
                 runwaysEmbedTemplate.embed.fields.push(
                 {
-                    "name": `RWY ${runway.le_ident} ${getRunwayAvailabilityStatus(runway.le_ident)}`,
+                    "name": `${translates[chosenLanguage].rwy} ${runway.le_ident} ${getRunwayAvailabilityStatus(runway.le_ident)}`,
                     "value": `
-                        *${translates[chosenLanguage].wind}: ${runwaysInfo[runway.le_ident].status}, ${getRunwayWindInformation(runway.le_ident)}*
+                        *${translates[chosenLanguage].wind}: ${translates[chosenLanguage][leWind]}, ${getRunwayWindInformation(runway.le_ident)}*
         
                         ${translates[chosenLanguage].elevation}: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}
                         ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}
                     `
                 },
                 {
-                    "name": `RWY ${runway.he_ident} ${getRunwayAvailabilityStatus(runway.he_ident)}`,
+                    "name": `${translates[chosenLanguage].rwy} ${runway.he_ident} ${getRunwayAvailabilityStatus(runway.he_ident)}`,
                     "value": `
-                        *${translates[chosenLanguage].wind}: ${runwaysInfo[runway.he_ident].status}, ${getRunwayWindInformation(runway.he_ident)}*
+                        *${translates[chosenLanguage].wind}: ${translates[chosenLanguage][heWind]}, ${getRunwayWindInformation(runway.he_ident)}*
         
                         ${translates[chosenLanguage].elevation}: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}
                         ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}
@@ -358,8 +365,6 @@ client.on('messageCreate', async (message) => {
 
 client.on('guildCreate', async (guild) => {
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
-
-    console.log(guild.id)
 
     databasePool.query('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => {});
 });
