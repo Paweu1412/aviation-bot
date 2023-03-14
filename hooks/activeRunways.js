@@ -24,7 +24,13 @@ export function getRunwaysWeather(weatherData, airportData) {
 
         const he_crosswind_side = he_crosswind > 0 ? "left" : "right";
 
-        const he_status = he_headtailwind > 0 ? "tailwind" : Math.abs(he_crosswind) > Math.abs(he_headtailwind) ? "crosswind" : "headwind";
+        // const he_status = he_headtailwind > 0 ? "tailwind" : Math.abs(he_crosswind) > Math.abs(he_headtailwind) ? "crosswind" : "headwind";
+
+        const he_status = {
+            "headtailwind": he_headtailwind,
+            "crosswind": Math.abs(he_crosswind),
+            "mainWind": he_headtailwind > 0 ? "tailwind" : Math.abs(he_crosswind) > Math.abs(he_headtailwind) ? "crosswind" : "headwind"
+        }
         
         const le_headtailwind = Math.round(windSpeed * Math.cos(toRad(windDirection - le_heading)));
 
@@ -32,13 +38,19 @@ export function getRunwaysWeather(weatherData, airportData) {
 
         const le_crosswind_side = le_crosswind < 0 ? "right" : "left";
 
-        const le_status = le_headtailwind > 0 ? "tailwind" : Math.abs(le_crosswind) > Math.abs(le_headtailwind) ? "crosswind" : "headwind";
+        // const le_status = le_headtailwind > 0 ? "tailwind" : Math.abs(le_crosswind) > Math.abs(le_headtailwind) ? "crosswind" : "headwind";
+
+        const le_status = {
+            "headtailwind": he_headtailwind,
+            "crosswind": Math.abs(he_crosswind),
+            "mainWind": le_headtailwind > 0 ? "tailwind" : Math.abs(le_crosswind) > Math.abs(le_headtailwind) ? "crosswind" : "headwind"
+        }
 
         result[runway.le_ident] = {
             status: le_status,
             crosswind: Math.abs(le_crosswind),
             crosswindSide: le_crosswind_side,
-            headtailwind: Math.abs(le_headtailwind),
+            headtailwind: le_headtailwind,
             headtailwindType: le_headtailwind > 0 ? "tailwind" : "headwind",
         };
 
@@ -46,10 +58,11 @@ export function getRunwaysWeather(weatherData, airportData) {
             status: he_status,
             crosswind: Math.abs(he_crosswind),
             crosswindSide: he_crosswind_side,
-            headtailwind: Math.abs(he_headtailwind),
+            headtailwind: he_headtailwind,
             headtailwindType: he_headtailwind > 0 ? "tailwind" : "headwind",
         };
     }
+    console.log(result);
 
     return result;
 }
