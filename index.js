@@ -305,8 +305,8 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     console.log(runwaysInfo[runway].headtailwind);
 
                     let results = {
-                        "headwind": Math.round(runwaysInfo[runway].headtailwind) > 0 ? `${Math.round(runwaysInfo[runway].headtailwind)}kts` : undefined,
-                        "tailwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
+                        "headwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(runwaysInfo[runway].headtailwind)}kts` : undefined,
+                        "tailwind": Math.round(runwaysInfo[runway].headtailwind) > 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
                         "crosswind": Math.round(runwaysInfo[runway].crosswind) > 0 ? `${Math.round(runwaysInfo[runway].crosswind)}kts ${translates[chosenLanguage][crosswindSide]}` : undefined
                     };
 
