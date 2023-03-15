@@ -30,7 +30,7 @@
     "not_in_database": "Not in database",
     "generated_at": "Generated at",
     "rwy": "RWY",
-    "footer_information": "📰 You can change the languages now! Visit: https://pawelsumara.com/aviationbot/ 📰 See a mistake in the translation? Text me! Pawcio#4564"
+    "footer_information": "📰 You can change the languages now! Visit: https://pawelsumara.pl/aviationbot/ 📰 See a mistake in the translation? Text me! Pawcio#4564"
   },
   "russian": {
     "airport_info": "Информация об аэропорте",
@@ -63,7 +63,7 @@
     "not_in_database": "Не в базе данных",
     "generated_at": "Сгенерировано в",
     "rwy": "ВПП",
-    "footer_information": "📰 Вы можете изменить языки прямо сейчас! Посетите: https://pawelsumara.com/aviationbot/ 📰 Увидели ошибку в переводе? Напишите мне! Pawcio#4564"
+    "footer_information": "📰 Вы можете изменить языки прямо сейчас! Посетите: https://pawelsumara.pl/aviationbot/ 📰 Увидели ошибку в переводе? Напишите мне! Pawcio#4564"
   },
 	"ukrainian": {
 		"airport_info": "Інформація про аеропорт",
@@ -96,7 +96,7 @@
     "not_in_database": "Не в базі даних",
     "generated_at": "Згенеровано в",
     "rwy": "ЗПС",
-    "footer_information": "📰 Ви можете змінити мову вже зараз! Відвідайте: https://pawelsumara.com/aviationbot/ 📰 Бачите помилку в перекладі? Напишіть! Pawcio#4564"
+    "footer_information": "📰 Ви можете змінити мову вже зараз! Відвідайте: https://pawelsumara.pl/aviationbot/ 📰 Бачите помилку в перекладі? Напишіть! Pawcio#4564"
 	},
 	"polish": {
 		"airport_info": "Informacje o lotnisku",
@@ -129,7 +129,7 @@
     "not_in_database": "Brak lotniska w bazie danych",
     "generated_at": "Wygenerowano o",
     "rwy": "Pas",
-    "footer_information": "📰 Możesz zmienić język! Odwiedź: https://pawelsumara.com/aviationbot/ 📰 Widzisz błąd w tłumaczeniu? Napisz do mnie! Pawcio#4564"
+    "footer_information": "📰 Możesz zmienić język! Odwiedź: https://pawelsumara.pl/aviationbot/ 📰 Widzisz błąd w tłumaczeniu? Napisz do mnie! Pawcio#4564"
 	},
   "finnish": {
     "airport_info": "Lentokentän tiedot",
@@ -162,7 +162,7 @@
     "not_in_database": "Lentokenttää ei ole tietokannassa",
     "generated_at": "Luotu",
     "rwy": "Pääte",
-    "footer_information": "📰 Voit vaihtaa kieltä! Käy osoitteessa: https://pawelsumara.com/aviationbot/ 📰 Näetkö käännösvirheen? Kirjoita minulle! Pawcio#4564"
+    "footer_information": "📰 Voit vaihtaa kieltä! Käy osoitteessa: https://pawelsumara.pl/aviationbot/ 📰 Näetkö käännösvirheen? Kirjoita minulle! Pawcio#4564"
   },
   "german": {
     "airport_info": "Flughafeninformationen",
@@ -195,6 +195,6 @@
     "not_in_database": "Flughafen nicht in der Datenbank",
     "generated_at": "Erstellt um",
     "rwy": "Start- und Landebahn",
-    "footer_information": "📰 Sie können die Sprache ändern! Besuchen Sie: https://pawelsumara.com/aviationbot/ 📰 Sehen Sie einen Übersetzungsfehler? Schreiben Sie mir! Pawcio#4564"
+    "footer_information": "📰 Sie können die Sprache ändern! Besuchen Sie: https://pawelsumara.pl/aviationbot/ 📰 Sehen Sie einen Übersetzungsfehler? Schreiben Sie mir! Pawcio#4564"
   }
 }
