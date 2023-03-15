@@ -28,7 +28,7 @@
     "relatively_safe": "means the runway is relatively safe, to be assessed by yourself",
     "unsafe": "means the runway is unsafe",
     "not_in_database": "Not in database",
-    "generated_at": "Generated at",
+    "generated_at": "Generated",
     "rwy": "RWY",
     "footer_information": "📰 You can change the languages now! Visit: https://pawelsumara.pl/aviationbot/ 📰 See a mistake in the translation? Text me! Pawcio#4564"
   },
@@ -61,7 +61,7 @@
     "relatively_safe": "означает, что ВПП относительно безопасна, нужно оценить самостоятельно",
     "unsafe": "означает, что ВПП небезопасна",
     "not_in_database": "Не в базе данных",
-    "generated_at": "Сгенерировано в",
+    "generated_at": "Сгенерировано",
     "rwy": "ВПП",
     "footer_information": "📰 Вы можете изменить языки прямо сейчас! Посетите: https://pawelsumara.pl/aviationbot/ 📰 Увидели ошибку в переводе? Напишите мне! Pawcio#4564"
   },
@@ -94,7 +94,7 @@
 		"relatively_safe": "означає, що злітно-посадкова смуга відносно безпечна, оцінити самостійно",
 		"unsafe": "означає, що злітно-посадкова смуга небезпечна",
     "not_in_database": "Не в базі даних",
-    "generated_at": "Згенеровано в",
+    "generated_at": "Згенеровано",
     "rwy": "ЗПС",
     "footer_information": "📰 Ви можете змінити мову вже зараз! Відвідайте: https://pawelsumara.pl/aviationbot/ 📰 Бачите помилку в перекладі? Напишіть! Pawcio#4564"
 	},
@@ -127,7 +127,7 @@
 		"relatively_safe": "oznacza, że pas jest względnie bezpieczny, ale trzeba ocenić samemu",
 		"unsafe": "oznacza, że pas jest niebezpieczny",
     "not_in_database": "Brak lotniska w bazie danych",
-    "generated_at": "Wygenerowano o",
+    "generated_at": "Wygenerowano",
     "rwy": "Pas",
     "footer_information": "📰 Możesz zmienić język! Odwiedź: https://pawelsumara.pl/aviationbot/ 📰 Widzisz błąd w tłumaczeniu? Napisz do mnie! Pawcio#4564"
 	},
@@ -193,7 +193,7 @@
     "relatively_safe": "bedeutet, dass die Start- und Landebahn relativ sicher ist, aber selbst bewerten",
     "unsafe": "bedeutet, dass die Start- und Landebahn unsicher ist",
     "not_in_database": "Flughafen nicht in der Datenbank",
-    "generated_at": "Erstellt um",
+    "generated_at": "Erstellt",
     "rwy": "Start- und Landebahn",
     "footer_information": "📰 Sie können die Sprache ändern! Besuchen Sie: https://pawelsumara.pl/aviationbot/ 📰 Sehen Sie einen Übersetzungsfehler? Schreiben Sie mir! Pawcio#4564"
   }
