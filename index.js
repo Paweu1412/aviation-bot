@@ -305,9 +305,9 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     console.log(runwaysInfo[runway].headtailwind);
 
                     let results = {
-                        "headwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(runwaysInfo[runway].headtailwind)}kts` : undefined,
+                        "headwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
                         "tailwind": Math.round(runwaysInfo[runway].headtailwind) > 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
-                        "crosswind": Math.round(runwaysInfo[runway].crosswind) > 0 ? `${Math.round(runwaysInfo[runway].crosswind)}kts ${translates[chosenLanguage][crosswindSide]}` : undefined
+                        "crosswind": Math.round(runwaysInfo[runway].crosswind) > 0 ? `${Math.round(Math.abs(runwaysInfo[runway].crosswind))}kts ${translates[chosenLanguage][crosswindSide]}` : undefined
                     };
 
                     let callback = '';
@@ -330,22 +330,12 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                 runwaysEmbedTemplate.embed.fields.push(
                 {
                     "name": `${translates[chosenLanguage].rwy} ${runway.le_ident} ${getRunwayAvailabilityStatus(runway.le_ident)}`,
-                    "value": `
-                        ${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.le_ident)}
-        
-                        ${translates[chosenLanguage].elevation}: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}
-                        ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}
-                    `
+                    "value": `${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.le_ident)}\n\n${translates[chosenLanguage].elevation}: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}\nILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}`
                 },
                 {
                     "name": `${translates[chosenLanguage].rwy} ${runway.he_ident} ${getRunwayAvailabilityStatus(runway.he_ident)}`,
-                    "value": `
-                        ${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.he_ident)}
-        
-                        ${translates[chosenLanguage].elevation}: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}
-                        ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}
-                    `
-                })
+                    "value": `${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.he_ident)}\n\n${translates[chosenLanguage].elevation}: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}\nILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}`
+                });
             }
         
             await interaction.createMessage(informationEmbedTemplate);
