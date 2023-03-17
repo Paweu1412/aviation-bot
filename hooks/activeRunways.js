@@ -62,7 +62,6 @@ export function getRunwaysWeather(weatherData, airportData) {
             headtailwindType: he_headtailwind > 0 ? "tailwind" : "headwind",
         };
     }
-    console.log(result);
 
     return result;
 }
