@@ -31,7 +31,12 @@ function dbQuery(query, vars, callback) {
 
 client.on('ready', async () => {
     try {
-        await client.editStatus('online', {name: 'discord.gg/JB2ubrPDzA'});
+        client.editStatus('online', { name: 'discord.gg/JB2ubrPDzA' });
+
+        // dbQuery('SELECT `language` FROM `languages` WHERE `id`=?', [interactionMemberGuildID], async (error, results, fields) => {
+        //     if (results.length) {
+        //         results = JSON.parse(JSON.stringify(results));
+        //         chosenLanguage = results[0].language;
 
         await client.createCommand({
             name: 'info',
@@ -48,7 +53,7 @@ client.on('ready', async () => {
         databasePool = mysql.createPool({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD, 
+            password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             waitForConnections: true
         });
@@ -69,17 +74,17 @@ client.on('ready', async () => {
 client.on('interactionCreate', async (interaction) => {
     try {
         if (!interaction) { return null; }
-    
+
         if (interaction.data.name === 'info') {
             const icaoCode = interaction.data.options[0].value.toUpperCase();
             let weatherData;
-            
+
             await fetch(`https://api.checkwx.com/metar/${icaoCode}/decoded?x-api-key=${checkWxApiToken}`)
                 .then(res => res.json())
                 .then(res => {
                     weatherData = res.data[0];
                 });
-    
+
             await fetch(`https://airportdb.io/api/v1/airport/${icaoCode}?apiToken=${airportDbToken}`)
                 .then(res => res.json())
                 .then(async airportData => {
@@ -102,7 +107,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
         if (results.length) {
             results = JSON.parse(JSON.stringify(results));
             chosenLanguage = results[0].language;
-            
+
             if (!airportData.name || !weatherData) {
                 return interaction.createMessage({
                     "embed": {
@@ -111,37 +116,31 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     }
                 });
             }
-        
+
             const runwaysInfo = getRunwaysWeather(weatherData, airportData);
             if (!runwaysInfo) { return null; }
-        
+
             const date = new Date();
-        
-            let day = date.getDate();
-            let month = date.getMonth()+1;
-            let year = date.getFullYear();
-            let hour = date.getHours();
-            let minute = date.getMinutes();
-        
-            let currentDate = `${hour}:${minute} ${day}/${month}/${year}`;
-        
+
+            let currentDate = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
             const informationEmbedTemplate = {
                 "embed": {
                     "title": airportData.name,
                     "thumbnail": {
                         "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001174383857676/airport.png"
                     },
-        
+
                     "description": `***${translates[chosenLanguage].airport_info}***`,
                     "color": 16777215,
-        
+
                     "fields": [
                         {
                             "name": `${translates[chosenLanguage].iata}`,
                             "value": airportData.iata_code ? airportData.iata_code : 'n/a',
                         },
                         {
-                            
+
                             "name": `${translates[chosenLanguage].elevation}`,
                             "value": airportData.elevation_ft ? `${airportData.elevation_ft}ft / ${Math.round(airportData.elevation_ft * 0.304)}m` : 'n/a',
                         },
@@ -156,46 +155,46 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     ]
                 }
             };
-        
+
             function getCloudsInformation() {
                 if (!weatherData) { return null; }
-        
+
                 if (!weatherData.clouds) { return '' }
-        
+
                 let callbackInformation = '';
-        
+
                 for (let i = 0; i < weatherData.clouds.length; i++) {
                     let returnString = '';
-        
+
                     if (weatherData.clouds[i]) {
                         if (weatherData.clouds[i].code && weatherData.clouds[i].feet) {
                             returnString = `${weatherData.clouds[i].code} / ${weatherData.clouds[i].feet}ft`;
                         }
-            
+
                         if (weatherData.clouds[i].code && (!weatherData.clouds[i].feet)) {
                             returnString = `${weatherData.clouds[i].code} / -`;
                         }
-            
+
                         if ((!weatherData.clouds[i].code) && weatherData.clouds[i].feet) {
                             returnString = `- / ${weatherData.clouds[i].feet}`;
                         }
                     }
-        
+
                     callbackInformation += `${returnString}\n`
                 }
-        
+
                 return callbackInformation !== '' ? callbackInformation : 'n/a';
             }
-        
+
             const weatherEmbedTemplate = {
                 "embed": {
                     "description": `***${translates[chosenLanguage].weather_info}***`,
                     "thumbnail": {
                         "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001175008821319/cloudy-day.png"
                     },
-        
+
                     "color": 16777215,
-        
+
                     "fields": [
                         {
                             "name": `${translates[chosenLanguage].raw}`,
@@ -217,7 +216,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                             "inline": true
                         },
                         {
-                            
+
                             "name": `${translates[chosenLanguage].dew_point}`,
                             "value": weatherData.dewpoint ? `${weatherData.dewpoint.celsius}°C` : 'n/a',
                             "inline": true,
@@ -236,7 +235,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                             "name": `${translates[chosenLanguage].wind_chill}`,
                             "value": weatherData.windchill ? `${weatherData.windchill.celsius}°C` : 'n/a',
                             "inline": true
-        
+
                         },
                         {
                             "name": `${translates[chosenLanguage].flight_cat}`,
@@ -256,46 +255,46 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     ]
                 }
             };
-        
+
             const runwaysEmbedTemplate = {
                 "embed": {
                     "description": `***${translates[chosenLanguage].rwy_info}***`,
                     "thumbnail": {
                         "url": "https://media.discordapp.net/attachments/1045000837241524264/1045001174685843526/runway.png"
                     },
-        
+
                     "color": 16777215,
-        
+
                     "fields": [],
-        
+
                     "footer": {
                         "text": `🟩 ${translates[chosenLanguage].safe}\n🟩 ⚠️ ${translates[chosenLanguage].relatively_safe}\n🟥 ${translates[chosenLanguage].unsafe}\n\n${translates[chosenLanguage].generated_at} ${currentDate}\n\n${translates[chosenLanguage].footer_information}`
                     }
                 }
             };
-        
+
             for (const runway of airportData.runways) {
                 function getRunwayAvailabilityStatus(runway) {
                     if (runwaysInfo[runway].status.mainWind === 'headwind') {
                         return '🟩';
                     }
-        
+
                     if (runwaysInfo[runway].status.mainWind === 'crosswind') {
                         if (runwaysInfo[runway].crosswind <= 10) {
                             return '🟩';
                         }
-                        
+
                         return '🟩 ⚠️';
                     }
-        
+
                     if (runwaysInfo[runway].status.mainWind === 'tailwind') {
                         if (runwaysInfo[runway].headtailwind <= 5) {
                             return '🟩 ⚠️';
                         }
-        
+
                         return '🟥';
                     }
-        
+
                     return null;
                 }
 
@@ -305,9 +304,9 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     console.log(runwaysInfo[runway].headtailwind);
 
                     let results = {
-                        "headwind": Math.round(runwaysInfo[runway].headtailwind) > 0 ? `${Math.round(runwaysInfo[runway].headtailwind)}kts` : undefined,
-                        "tailwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
-                        "crosswind": Math.round(runwaysInfo[runway].crosswind) > 0 ? `${Math.round(runwaysInfo[runway].crosswind)}kts ${translates[chosenLanguage][crosswindSide]}` : undefined
+                        "headwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
+                        "tailwind": Math.round(runwaysInfo[runway].headtailwind) > 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
+                        "crosswind": Math.round(runwaysInfo[runway].crosswind) > 0 ? `${Math.round(Math.abs(runwaysInfo[runway].crosswind))}kts ${translates[chosenLanguage][crosswindSide]}` : undefined
                     };
 
                     let callback = '';
@@ -326,34 +325,24 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
 
                     return callback;
                 }
-        
+
                 runwaysEmbedTemplate.embed.fields.push(
-                {
-                    "name": `${translates[chosenLanguage].rwy} ${runway.le_ident} ${getRunwayAvailabilityStatus(runway.le_ident)}`,
-                    "value": `
-                        ${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.le_ident)}
-        
-                        ${translates[chosenLanguage].elevation}: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}
-                        ILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}
-                    `
-                },
-                {
-                    "name": `${translates[chosenLanguage].rwy} ${runway.he_ident} ${getRunwayAvailabilityStatus(runway.he_ident)}`,
-                    "value": `
-                        ${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.he_ident)}
-        
-                        ${translates[chosenLanguage].elevation}: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}
-                        ILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}
-                    `
-                })
+                    {
+                        "name": `${translates[chosenLanguage].rwy} ${runway.le_ident} ${getRunwayAvailabilityStatus(runway.le_ident)}`,
+                        "value": `${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.le_ident)}\n\n${translates[chosenLanguage].elevation}: ${runway.le_elevation_ft ? `${runway.le_elevation_ft}ft / ${Math.round(runway.le_elevation_ft * 0.304)}m` : 'n/a'}\nILS: ${runway.le_ils !== undefined ? `${runway.le_ils.freq} / ${runway.le_ils.course}°` : 'n/a'}`
+                    },
+                    {
+                        "name": `${translates[chosenLanguage].rwy} ${runway.he_ident} ${getRunwayAvailabilityStatus(runway.he_ident)}`,
+                        "value": `${translates[chosenLanguage].winds}: ${getRunwayWindInformation(runway.he_ident)}\n\n${translates[chosenLanguage].elevation}: ${runway.he_elevation_ft ? `${runway.he_elevation_ft}ft / ${Math.round(runway.he_elevation_ft * 0.304)}m` : 'n/a'}\nILS: ${runway.he_ils !== undefined ? `${runway.he_ils.freq} / ${runway.he_ils.course}°` : 'n/a'}`
+                    });
             }
-        
+
             await interaction.createMessage(informationEmbedTemplate);
             await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
             await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
-        
+
             await client.createMessage('1044041529557274744', `*${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
-            
+
             return;
         }
     });
@@ -371,7 +360,7 @@ client.on('messageCreate', async (message) => {
 client.on('guildCreate', async (guild) => {
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
 
-    databasePool.query('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => {});
+    databasePool.query('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => { });
 });
 
 client.on('guildDelete', async (guild) => {
@@ -379,7 +368,7 @@ client.on('guildDelete', async (guild) => {
 
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie został usunięty z serwera ${guild.name} / ${guild.memberCount}`);
 
-    databasePool.query('DELETE FROM `languages` WHERE id=?', [guild.id], () => {});
+    databasePool.query('DELETE FROM `languages` WHERE id=?', [guild.id], () => { });
 });
 
 client.connect();
