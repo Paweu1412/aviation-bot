@@ -268,7 +268,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     "fields": [],
 
                     "footer": {
-                        "text": `🟩 ${translates[chosenLanguage].safe}\n🟩 ⚠️ ${translates[chosenLanguage].relatively_safe}\n🟥 ${translates[chosenLanguage].unsafe}\n\n${translates[chosenLanguage].generated_at} ${currentDate}\n\n${translates[chosenLanguage].footer_information}`
+                        "text": `🟩 ${translates[chosenLanguage].safe}\n🟩 ⚠️ ${translates[chosenLanguage].relatively_safe}\n🟥 ${translates[chosenLanguage].unsafe}\n\n${translates[chosenLanguage].generated_at} ${currentDate}`
                     }
                 }
             };

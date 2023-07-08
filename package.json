@@ -3,7 +3,7 @@
   "dependencies": {
     "discord-eris-embeds": "^1.0.4",
     "dotenv": "^16.0.3",
-    "eris": "^0.17.1",
+    "eris": "^0.17.2",
     "fast-xml-parser": "^4.0.11",
     "fs": "^0.0.1-security",
     "mysql": "^2.18.1",
