@@ -25,13 +25,45 @@ const checkWxApiToken = process.env.CHECK_WX_API_TOKEN;
 
 let databasePool;
 
-function dbQuery(query, vars, callback) {
+databasePool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true
+});
+
+databasePool.query('SELECT 1 + 1 AS solution', (error) => {
+    if (error) {
+        console.log(`Connection failed: ${error.message}`);
+        process.exit(0);
+    } else {
+        console.log('Connection success, bot is ready!');
+    }
+});
+
+const dbQuery = (query, vars, callback) => {
     databasePool.query(query, vars, (error, results, fields) => callback(error, results, fields));
 }
 
+
+const countServers = () => {
+    return new Promise((resolve, reject) => {
+        dbQuery('SELECT COUNT(id) AS count FROM languages', (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results[0].count);
+            }
+        });
+    });
+};
+
+
 client.on('ready', async () => {
     try {
-        client.editStatus('online', { name: 'discord.gg/JB2ubrPDzA' });
+        const guildsCount = await countServers();
+        await client.editStatus('online', { type: 3, name: `${guildsCount} servers` })
 
         // dbQuery('SELECT `language` FROM `languages` WHERE `id`=?', [interactionMemberGuildID], async (error, results, fields) => {
         //     if (results.length) {
@@ -48,23 +80,6 @@ client.on('ready', async () => {
                 description: 'Airport ICAO code (e.g. EPKK)',
                 required: true
             }]
-        });
-
-        databasePool = mysql.createPool({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            waitForConnections: true
-        });
-
-        databasePool.query('SELECT 1 + 1 AS solution', (error) => {
-            if (error) {
-                console.log(`Connection failed: ${error.message}`);
-                process.exit(0);
-            } else {
-                console.log('Connection success, bot is ready!');
-            }
         });
     } catch (err) {
         console.error(err);
@@ -96,7 +111,7 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-async function sendAirportInformation(interaction, weatherData, airportData) {
+const sendAirportInformation = async (interaction, weatherData, airportData) => {
     let interactionMemberUsername = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
     let interactionMemberGuildName = interaction.member.guild.name;
     let interactionMemberGuildID = interaction.member.guild.id;
@@ -156,7 +171,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                 }
             };
 
-            function getCloudsInformation() {
+            const getCloudsInformation = () => {
                 if (!weatherData) { return null; }
 
                 if (!weatherData.clouds) { return '' }
@@ -274,7 +289,7 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
             };
 
             for (const runway of airportData.runways) {
-                function getRunwayAvailabilityStatus(runway) {
+                const getRunwayAvailabilityStatus = (runway) => {
                     if (runwaysInfo[runway].status.mainWind === 'headwind') {
                         return '🟩';
                     }
@@ -298,10 +313,8 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     return null;
                 }
 
-                function getRunwayWindInformation(runway) {
+                const getRunwayWindInformation = (runway) => {
                     let crosswindSide = runwaysInfo[runway].crosswindSide;
-
-                    console.log(runwaysInfo[runway].headtailwind);
 
                     let results = {
                         "headwind": Math.round(runwaysInfo[runway].headtailwind) < 0 ? `${Math.round(Math.abs(runwaysInfo[runway].headtailwind))}kts` : undefined,
@@ -337,9 +350,22 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
                     });
             }
 
+            const footerEmbed = {
+                "embed": {
+                    "color": 16760576,
+                    "description": `${translates[chosenLanguage].footer_information}`,
+
+                    "fields": [],
+                }
+            };
+
             await interaction.createMessage(informationEmbedTemplate);
             await client.createMessage(interaction.channel.id, weatherEmbedTemplate);
             await client.createMessage(interaction.channel.id, runwaysEmbedTemplate);
+
+            if (Math.random() < 0.5) {
+                await client.createMessage(interaction.channel.id, footerEmbed);
+            }
 
             await client.createMessage('1044041529557274744', `*${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
 
@@ -348,19 +374,10 @@ async function sendAirportInformation(interaction, weatherData, airportData) {
     });
 }
 
-client.on('messageCreate', async (message) => {
-    if (!message.content.includes('number of servers bot')) { return; }
-    if (message.channel.id != 1044041529557274744) { return; }
-
-    let numberOfServers = await client.guilds.size;
-
-    await client.createMessage('1044041529557274744', `Liczba serwerów: ${numberOfServers} [${100 - numberOfServers}]`);
-});
-
 client.on('guildCreate', async (guild) => {
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie dołączył na serwer ${guild.name} / ${guild.memberCount}`);
 
-    databasePool.query('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => { });
+    dbQuery('INSERT INTO `languages` (id) VALUES (?)', [guild.id], () => {});
 });
 
 client.on('guildDelete', async (guild) => {
@@ -368,7 +385,7 @@ client.on('guildDelete', async (guild) => {
 
     await client.createMessage('1044041529557274744', `Paffsowy bot właśnie został usunięty z serwera ${guild.name} / ${guild.memberCount}`);
 
-    databasePool.query('DELETE FROM `languages` WHERE id=?', [guild.id], () => { });
+    dbQuery('DELETE FROM `languages` WHERE id=?', [guild.id], () => {});
 });
 
 client.connect();

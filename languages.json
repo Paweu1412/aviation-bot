@@ -30,7 +30,7 @@
     "not_in_database": "Not in database",
     "generated_at": "Generated",
     "rwy": "RWY",
-    "footer_information": "📰 You can change the languages now! Visit: https://pawelsumara.pl/aviationbot/ 📰 See a mistake in the translation? Text me! Pawcio#4564"
+    "footer_information": "**Hey, would you like to buy me a coffee?** 💸\n\nI would be very grateful if you could support my work with a symbolic penny. It means a lot to me, thank you very much! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
   },
   "russian": {
     "airport_info": "Информация об аэропорте",
@@ -63,7 +63,7 @@
     "not_in_database": "Не в базе данных",
     "generated_at": "Сгенерировано",
     "rwy": "ВПП",
-    "footer_information": "📰 Вы можете изменить языки прямо сейчас! Посетите: https://pawelsumara.pl/aviationbot/ 📰 Увидели ошибку в переводе? Напишите мне! Pawcio#4564"
+    "footer_information": "**Не хотите ли угостить меня кофе?** 💸\n\nЯ буду очень признателен, если вы поддержите мою работу символической копейкой. Это очень много для меня значит, спасибо большое! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
   },
 	"ukrainian": {
 		"airport_info": "Інформація про аеропорт",
@@ -96,7 +96,7 @@
     "not_in_database": "Не в базі даних",
     "generated_at": "Згенеровано",
     "rwy": "ЗПС",
-    "footer_information": "📰 Ви можете змінити мову вже зараз! Відвідайте: https://pawelsumara.pl/aviationbot/ 📰 Бачите помилку в перекладі? Напишіть! Pawcio#4564"
+    "footer_information": "**Привіт, не хочеш пригостити мене кавою?** 💸\n\nЯ був би дуже вдячний, якби ви підтримали мою роботу символічною копійкою. Це багато для мене значить, дуже дякую! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
 	},
 	"polish": {
 		"airport_info": "Informacje o lotnisku",
@@ -116,7 +116,7 @@
 		"wind_chill": "Temperatura odczuwalna",
 		"flight_cat": "Kategoria lotu",
 		"clouds": "Chmury",
-		"observed": "Obserwowane",
+		"observed": "Zaobserwowano",
 		"rwy_info": "Informacje o pasach startowych",
 		"crosswind": "boczny",
 		"headwind": "czołowy",
@@ -129,7 +129,7 @@
     "not_in_database": "Brak lotniska w bazie danych",
     "generated_at": "Wygenerowano",
     "rwy": "Pas",
-    "footer_information": "📰 Możesz zmienić język! Odwiedź: https://pawelsumara.pl/aviationbot/ 📰 Widzisz błąd w tłumaczeniu? Napisz do mnie! Pawcio#4564"
+    "footer_information": "**Hej, chciałbyś postawić mi kawę?** 💸\n\nBędę bardzo wdzięczny, jeśli wesprzesz moją pracę symbolicznym groszem. To wiele dla mnie znaczy, bardzo dziękuję! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
 	},
   "finnish": {
     "airport_info": "Lentokentän tiedot",
@@ -162,7 +162,7 @@
     "not_in_database": "Lentokenttää ei ole tietokannassa",
     "generated_at": "Luotu",
     "rwy": "Pääte",
-    "footer_information": "📰 Voit vaihtaa kieltä! Käy osoitteessa: https://pawelsumara.pl/aviationbot/ 📰 Näetkö käännösvirheen? Kirjoita minulle! Pawcio#4564"
+    "footer_information": "**Hei, haluaisitko tarjota minulle kahvin?** 💸\n\nOlisin hyvin kiitollinen, jos voisit tukea työtäni symbolisella pennillä. Se merkitsee minulle paljon, kiitos paljon! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
   },
   "german": {
     "airport_info": "Flughafeninformationen",
@@ -195,6 +195,6 @@
     "not_in_database": "Flughafen nicht in der Datenbank",
     "generated_at": "Erstellt",
     "rwy": "Start- und Landebahn",
-    "footer_information": "📰 Sie können die Sprache ändern! Besuchen Sie: https://pawelsumara.pl/aviationbot/ 📰 Sehen Sie einen Übersetzungsfehler? Schreiben Sie mir! Pawcio#4564"
+    "footer_information": "**Hey, möchten Sie mir einen Kaffee spendieren?** 💸\n\nIch wäre Ihnen sehr dankbar, wenn Sie meine Arbeit mit einem symbolischen Pfennig unterstützen könnten. Es bedeutet mir sehr viel, vielen Dank! ☕\n\nhttps://www.buymeacoffee.com/aviationbot"
   }
 }
