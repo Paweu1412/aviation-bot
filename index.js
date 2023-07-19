@@ -133,7 +133,14 @@ const sendAirportInformation = async (interaction, weatherData, airportData) => 
             }
 
             const runwaysInfo = getRunwaysWeather(weatherData, airportData);
-            if (!runwaysInfo) { return null; }
+            if (runwaysInfo === null) { 
+                return interaction.createMessage({
+                    "embed": {
+                        "color": 16777215,
+                        "description": `${translates[chosenLanguage].not_in_database}`
+                    }
+                });
+            }
 
             const date = new Date();
 

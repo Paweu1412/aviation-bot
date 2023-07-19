@@ -8,8 +8,13 @@ export function getRunwaysWeather(weatherData, airportData) {
     if (!airportData) { return null; }
     if (!weatherData) { return null; }
 
-    const windDirection = weatherData.wind.degrees;
-    const windSpeed = weatherData.wind.speed_kts;
+    const windDirection = weatherData.wind ? weatherData.wind.degrees : 0;
+
+    if (windDirection === 0) { return null; }
+
+    const windSpeed = weatherData.wind ? weatherData.wind.speed_kts : 0;
+
+    if (windSpeed === 0) { return null; }
 
     const result = {};
 
