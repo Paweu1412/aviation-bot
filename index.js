@@ -127,7 +127,7 @@ const sendAirportInformation = async (interaction, weatherData, airportData) => 
                 return interaction.createMessage({
                     "embed": {
                         "color": 16777215,
-                        "description": `${translates[chosenLanguage].not_in_database}`
+                        "description": `${translates[chosenLanguage].no_data}`
                     }
                 });
             }
