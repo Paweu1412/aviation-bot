@@ -81,6 +81,25 @@ client.on('ready', async () => {
                 required: true
             }]
         });
+
+        await client.createCommand({
+            name: 'tl',
+            type: 1,
+            description: 'Calculate transition level for given QNH and transition altitude',
+            options: [
+            {
+                name: 'QNH',
+                type: 3,
+                description: 'QNH in hPa (e.g. 1013)',
+                required: true
+            },
+            {
+                name: 'Transition Altitude',
+                type: 3,
+                description: 'Transition altitude in ft (e.g. 5000)',
+                required: true 
+            }]
+        });
     } catch (err) {
         console.error(err);
     }
@@ -89,6 +108,47 @@ client.on('ready', async () => {
 client.on('interactionCreate', async (interaction) => {
     try {
         if (!interaction) { return null; }
+
+        if (interaction.data.name === 'tl') {
+            let interactionMemberGuildID = interaction.member.guild.id;
+
+            dbQuery('SELECT `language` FROM `languages` WHERE `id`=?', [interactionMemberGuildID], async (error, results, fields) => {
+                if (results.length) {
+                    results = JSON.parse(JSON.stringify(results));
+                    let chosenLanguage = results[0].language;
+
+                    const qnh = parseInt(interaction.data.options[0].value);
+                    const ta = parseInt(interaction.data.options[1].value);
+
+                    console.log(qnh, ta);
+
+                    const calculateTransitionLevel = (ta, qnh) => {
+                        return Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 100) * 100;
+                    }
+
+                    // const calculateFLBelow10 = (ta, qnh) => {
+                    //     return Math.round((qnh - 1013) / 2) + ta;
+                    // }
+
+                    // const calculateFLBelow20 = (ta, qnh) => {
+                    //     return Math.round((qnh - 1013) / 2) + ta + 2000;
+                    // }
+
+                    let description = translates[chosenLanguage].calculator_description;
+                    description = description.replace('tl', calculateTransitionLevel(ta, qnh));
+                    // description = description.replace('fleq10', calculateFLBelow10(ta, qnh));
+                    // description = description.replace('fleq20', calculateFLBelow20(ta, qnh));
+
+                    return interaction.createMessage({
+                        "embed": {
+                            "title": `${translates[chosenLanguage].calculator_header}`,
+                            "color": 16777215,
+                            "description": description
+                        }
+                    });
+                }
+            });
+        }
 
         if (interaction.data.name === 'info') {
             const icaoCode = interaction.data.options[0].value.toUpperCase();

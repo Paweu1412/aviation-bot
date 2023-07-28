@@ -31,7 +31,9 @@
     "generated_at": "Generated",
     "rwy": "RWY",
     "footer_information": "**Hey, would you like to buy me a coffee?** 💸\n\nI create this for free, so I would be very grateful if you could support my work with a symbolic penny. It means a lot to me, thank you very much! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "No data available. Try again later."
+    "no_data": "No data available. Try again later.",
+    "calculator_header": "Transition Level Calculator",
+    "calculator_description": "Transition Level is tlft"
   },
   "russian": {
     "airport_info": "Информация об аэропорте",
@@ -65,7 +67,9 @@
     "generated_at": "Сгенерировано",
     "rwy": "ВПП",
     "footer_information": "**Не хотите ли угостить меня кофе?** 💸\n\nЯ создаю это бесплатно, поэтому я буду очень признателен, если вы поддержите мою работу символической копейкой. Это очень много для меня значит, спасибо большое! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "Нет данных. Попробуйте позже."
+    "no_data": "Нет данных. Попробуйте позже.",
+    "calculator_header": "Калькулятор Transition Level",
+    "calculator_description": "Transition Level - tlft"
   },
 	"ukrainian": {
 		"airport_info": "Інформація про аеропорт",
@@ -99,7 +103,9 @@
     "generated_at": "Згенеровано",
     "rwy": "ЗПС",
     "footer_information": "**Привіт, не хочеш пригостити мене кавою?** 💸\n\nЯ створюю це безкоштовно, тому я був би дуже вдячний, якби ви підтримали мою роботу символічною копійкою. Це багато для мене значить, дуже дякую! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "Немає даних. Спробуйте пізніше."
+    "no_data": "Немає даних. Спробуйте пізніше.",
+    "calculator_header": "Калькулятор Transition Level",
+    "calculator_description": "Transition Level - tlft"
   },
 	"polish": {
 		"airport_info": "Informacje o lotnisku",
@@ -133,9 +139,10 @@
     "generated_at": "Wygenerowano",
     "rwy": "Pas",
     "footer_information": "**Hej, chciałbyś postawić mi kawę?** 💸\n\nTworzę to wszystko za darmo, więc będę bardzo wdzięczny, jeśli wesprzesz moją pracę symbolicznym groszem. To wiele dla mnie znaczy, bardzo dziękuję! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "Brak danych. Spróbuj ponownie później."
+    "no_data": "Brak danych. Spróbuj ponownie później.",
+    "calculator_header": "Kalkulator Transition Level",
+    "calculator_description": "Transition Level - tlft"
   },
-
   "finnish": {
     "airport_info": "Lentokentän tiedot",
     "iata": "IATA koodi",
@@ -168,7 +175,9 @@
     "generated_at": "Luotu",
     "rwy": "Pääte",
     "footer_information": "**Hei, haluaisitko tarjota minulle kahvin?** 💸\n\nLuon tämän ilmaiseksi, joten olisin hyvin kiitollinen, jos voisit tukea työtäni symbolisella pennillä. Se merkitsee minulle paljon, kiitos paljon! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "Tietoja ei ole saatavilla. Yritä myöhemmin uudelleen."
+    "no_data": "Tietoja ei ole saatavilla. Yritä myöhemmin uudelleen.",
+    "calculator_header": "Transition Level Laskuri",
+    "calculator_description": "Transition Level - tlft"
   },
   "german": {
     "airport_info": "Flughafeninformationen",
@@ -202,6 +211,8 @@
     "generated_at": "Erstellt",
     "rwy": "Start- und Landebahn",
     "footer_information": "**Hey, möchten Sie mir einen Kaffee spendieren?** 💸\n\nIch erstelle dies kostenlos, daher wäre ich dankbar, wenn Sie meine Arbeit mit einem symbolischen Pfennig unterstützen könnten. Es bedeutet mir sehr viel, vielen Dank! ☕\n\nhttps://www.buymeacoffee.com/aviationbot",
-    "no_data": "Keine Daten verfügbar. Versuchen Sie es später noch einmal."
+    "no_data": "Keine Daten verfügbar. Versuchen Sie es später noch einmal.",
+    "calculator_header": "Transition Level Rechner",
+    "calculator_description": "Transition Level - tlft"
   }
 }
