@@ -123,7 +123,7 @@ client.on('interactionCreate', async (interaction) => {
                     console.log(qnh, ta);
 
                     const calculateTransitionLevel = (ta, qnh) => {
-                        return Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 100) * 100;
+                        return Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 1000) * 1000;
                     }
 
                     // const calculateFLBelow10 = (ta, qnh) => {
