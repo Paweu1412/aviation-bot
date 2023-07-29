@@ -88,13 +88,13 @@ client.on('ready', async () => {
             description: 'Calculate transition level for given QNH and transition altitude',
             options: [
             {
-                name: 'QNH',
+                name: 'qnh',
                 type: 3,
                 description: 'QNH in hPa (e.g. 1013)',
                 required: true
             },
             {
-                name: 'Transition Altitude',
+                name: 'ta',
                 type: 3,
                 description: 'Transition altitude in ft (e.g. 5000)',
                 required: true 
@@ -110,6 +110,8 @@ client.on('interactionCreate', async (interaction) => {
         if (!interaction) { return null; }
 
         if (interaction.data.name === 'tl') {
+            let interactionMemberUsername = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
+            let interactionMemberGuildName = interaction.member.guild.name;
             let interactionMemberGuildID = interaction.member.guild.id;
 
             dbQuery('SELECT `language` FROM `languages` WHERE `id`=?', [interactionMemberGuildID], async (error, results, fields) => {
@@ -120,10 +122,11 @@ client.on('interactionCreate', async (interaction) => {
                     const qnh = parseInt(interaction.data.options[0].value);
                     const ta = parseInt(interaction.data.options[1].value);
 
-                    console.log(qnh, ta);
-
                     const calculateTransitionLevel = (ta, qnh) => {
-                        return Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 1000) * 1000;
+                        const transitionLevel = Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 100);
+                        const truncatedTransitionLevel = Math.round(transitionLevel / 10) * 10;
+                        const formattedTransitionLevel = truncatedTransitionLevel.toString().padStart(3, '0'); 
+                        return formattedTransitionLevel;
                     }
 
                     // const calculateFLBelow10 = (ta, qnh) => {
@@ -136,8 +139,10 @@ client.on('interactionCreate', async (interaction) => {
 
                     let description = translates[chosenLanguage].calculator_description;
                     description = description.replace('tl', calculateTransitionLevel(ta, qnh));
-                    // description = description.replace('fleq10', calculateFLBelow10(ta, qnh));
-                    // description = description.replace('fleq20', calculateFLBelow20(ta, qnh));
+                    description = description.replace('qnh', qnh);
+                    description = description.replace('ta', ta);
+
+                    await client.createMessage('1044041529557274744', `**${interactionMemberUsername}** z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie **/tl**!`);
 
                     return interaction.createMessage({
                         "embed": {
@@ -434,7 +439,7 @@ const sendAirportInformation = async (interaction, weatherData, airportData) => 
                 await client.createMessage(interaction.channel.id, footerEmbed);
             }
 
-            await client.createMessage('1044041529557274744', `*${interactionMemberUsername}* z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie /info!`);
+            await client.createMessage('1044041529557274744', `**${interactionMemberUsername}** z serwera *${interactionMemberGuildName}* właśnie wykonał polecenie **/info**!`);
 
             return;
         }
@@ -456,4 +461,3 @@ client.on('guildDelete', async (guild) => {
 });
 
 client.connect();
-
