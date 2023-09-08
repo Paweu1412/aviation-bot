@@ -124,7 +124,7 @@ client.on('interactionCreate', async (interaction) => {
 
                     const calculateTransitionLevel = (ta, qnh) => {
                         const transitionLevel = Math.ceil(((ta + (1013 - qnh) * 28) + 1000) / 100);
-                        const truncatedTransitionLevel = Math.round(transitionLevel / 10) * 10;
+                        const truncatedTransitionLevel = Math.ceil(transitionLevel / 10) * 10;
                         const formattedTransitionLevel = truncatedTransitionLevel.toString().padStart(3, '0'); 
                         return formattedTransitionLevel;
                     }
@@ -198,6 +198,7 @@ const sendAirportInformation = async (interaction, weatherData, airportData) => 
             }
 
             const runwaysInfo = getRunwaysWeather(weatherData, airportData);
+
             if (runwaysInfo === null) { 
                 return interaction.createMessage({
                     "embed": {
